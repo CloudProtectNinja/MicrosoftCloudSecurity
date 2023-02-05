@@ -1,0 +1,42 @@
+// Define a list of long but well-known file extensions, 
+// which are not under suspicion of being related to a ransomware attack
+// We use this list in the query below in order to remove some false positives
+// Please note: You will need to extend this list to exclude further known file extensions used by software in your environment
+let fileExtensionExclusions = dynamic(['APACHE', 'CATAnalysis', 
+   'CATAnalysisComputations', 'CATAnalysisResults', 'CATDrawing', 'CATPart', 'CATProduct', 'CATfct', 
+   'FatalErr', 'Locking', 'SLDASM', 'SLDDRW', 'SchDoc', 'SchDocPreview', 
+   'appinfo', 'blend1', 'composite', 'cproject', 'crdownload', 'datbackup', 'doxyfile', 'drawio', 
+   'jsonlz4', 'moz-backup', 'onetmp', 'package', 'pbiviz', 'project', 'properties', 
+   'scoreboard', 'svn-base', 'tsproj', 'whiteboard']);
+// Query the Office 365 audit log
+OfficeActivity
+// Filter for file renaming activities in OneDrive/SharePoint/Teams, where the file extension has been modified
+| where Operation == "FileRenamed" 
+   and SourceFileExtension !~ DestinationFileExtension
+// Get the file path of the renamed file but without file extension because we need this to group the query results by each unique file
+| extend OfficeObjectIdTrimmedBySourceFileExtension 
+   = substring(OfficeObjectId, 0, strlen(OfficeObjectId) - strlen(SourceFileExtension) - 1)
+| extend OfficeObjectIdTrimmedByFileExtension 
+   = iff(OfficeObjectIdTrimmedBySourceFileExtension endswith DestinationFileExtension, 
+      substring(OfficeObjectIdTrimmedBySourceFileExtension, 0, strlen(OfficeObjectIdTrimmedBySourceFileExtension) - strlen(DestinationFileExtension) - 1), 
+      OfficeObjectIdTrimmedBySourceFileExtension)
+// Group the results showing each unique file, which is suspected of having been encrypted and renamed by ransomware
+| summarize TimeGenerated = arg_max(TimeGenerated, *), 
+   UserId = arg_max(UserId, TimeGenerated), 
+   Site_Url = arg_max(Site_Url, TimeGenerated), 
+   SourceFileName = arg_max(SourceFileName, TimeGenerated), 
+   SourceFileExtension = arg_max(SourceFileExtension, TimeGenerated), 
+   DestinationFileExtension = arg_max(DestinationFileExtension, TimeGenerated),
+   OfficeObjectId = arg_max(OfficeObjectId, TimeGenerated) 
+   by OfficeObjectIdTrimmedByFileExtension
+// Filter for files that currently have an extension with more than 5 characters,
+// and which are not contained in our exclusion list of well-known file extensions
+// These are the files suspected of being manipulated by ransomware
+| where (strlen(DestinationFileExtension) > 5 
+   and DestinationFileExtension !in (fileExtensionExclusions))
+// Only output the most important properties
+| project TimeGenerated, UserId, 
+   Site_Url, SourceFileName, SourceFileExtension, 
+   DestinationFileExtension, OfficeObjectId
+// Show the most recent malware renaming activity at the top of the result list
+| order by TimeGenerated desc
