@@ -33,7 +33,7 @@
 <!-- OVERVIEW -->
 ## Overview
 
-The PowerShell script [Export-SharePointOnlyGuestUsers.ps1](/Export-SharePointOnlyGuestUsers.ps1) creates a CSV export of all guest users across SharePoint Online and/or OneDrive for Business sites in your Microsoft 365 tenant. The output allows to distinguish between "SharePoint-only guest users" and Azure AD B2B guest users.
+The PowerShell script [Export-SharePointOnlyGuestUsers.ps1](Export-SharePointOnlyGuestUsers.ps1) creates a CSV export of all guest users across SharePoint Online and/or OneDrive for Business sites in your Microsoft 365 tenant. The output allows to distinguish between "SharePoint-only guest users" and Azure AD B2B guest users.
 
 Please find more details in my blog post:
 
