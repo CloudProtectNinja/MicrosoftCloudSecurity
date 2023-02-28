@@ -4,14 +4,17 @@
         across all SharePoint and/or OneDrive sites of your Microsoft 365 tenant.
 
     .DESCRIPTION
-        ! Required modules !
+        Required PowerShell modules:
         - PnP.PowerShell: https://github.com/pnp/powershell / Script developed with version 1.12.0
+
+        Required API permissions for the registered Azure AD application:
+        - Sites.FullControl.All application permissions on the SharePoint API (https://microsoft.sharepoint-df.com/Sites.FullControl.All)
     
     .PARAMETER TenantName
         The name of the Microsoft 365 tenant, i.e. https://[TenantName].sharepoint.com.
     
     .PARAMETER ClientId
-        The client id of the Azure AD application, which has "Sites.FullControl.All" permissions to access all SharePoint and OneDrive sites.     
+        The client id of the Azure AD application, which has "Sites.FullControl.All" SharePoint application permissions to access all SharePoint and OneDrive sites.     
 
     .PARAMETER CertificateThumbprint
         The thumbrint of the certificate associated with the Azure AD application, which is used to find the certificate in the Windows Certificate Store.
@@ -31,15 +34,24 @@
         
     .EXAMPLE
         # Create export on guest users across SharePoint and OneDrive
-        .\Export-SharePointOnlineGuestUsers.ps1 -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
+        .\Export-SharePointOnlyGuestUsers.ps1 -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
     
     .EXAMPLE
         # Create export on guest users across OneDrive
-        .\Export-SharePointOnlineGuestUsers.ps1 -IncludedServices @("OneDrive") -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
+        .\Export-SharePointOnlyGuestUsers.ps1 -IncludedServices @("OneDrive") -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
 
     .EXAMPLE
         # Create export on guest users across the sites specified in the provided CSV file (with "SiteUrl" column)
-        .\Export-SharePointOnlineGuestUsers.ps1 -SiteUrlInputFile ".\Sites.csv" -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
+        .\Export-SharePointOnlyGuestUsers.ps1 -SiteUrlInputFile ".\Sites.csv" -TenantName "yourtenant" -ClientId "fa1a81f1-e729-44d8-bb71-0a0c339c0f62" -CertificateThumbprint "789123ABC072E4125785GH4F836AFB12FA64DB210"
+
+    .LINK
+        https://cloudprotect.ninja/reporting-sharepoint-only-guest-users/
+
+    .LINK
+        https://github.com/CloudProtectNinja/MicrosoftCloudSecurity/tree/main/Azure%20AD/B2B%20Collaboration/Export%20SharePoint-only%20Guest%20Users
+
+    .AUTHOR
+        Dustin Schutzeichel (https://cloudprotect.ninja)
 #>
 
 [CmdletBinding()]
