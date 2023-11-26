@@ -31,7 +31,7 @@
 <!-- OVERVIEW -->
 ## Overview
 
-In this repository, you can find a collection of best practices regarding security and compliance in the Microsoft 365 and Azure cloud. In particular, I am focusing on Azure AD, Microsoft 365 Defender, Sentinel and Purview.
+In this repository, you can find a collection of best practices regarding security and compliance in the Microsoft 365 and Azure cloud. In particular, I am focusing on Entra ID, Microsoft 365 Defender, Sentinel and Purview.
 
 The repository is part of my blog. For example, I am using the repository to share useful PowerShell scripts that I develop as part of new blog posts.
 

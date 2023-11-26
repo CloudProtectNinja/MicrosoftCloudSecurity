@@ -33,11 +33,11 @@
 <!-- OVERVIEW -->
 ## Overview
 
-The PowerShell script [Export-SharePointOnlyGuestUsers.ps1](Export-SharePointOnlyGuestUsers.ps1) creates a CSV export of all guest users across SharePoint Online and/or OneDrive for Business sites in your Microsoft 365 tenant. The output allows to distinguish between "SharePoint-only guest users" and Azure AD B2B guest users.
+The PowerShell script [Export-SharePointOnlyGuestUsers.ps1](Export-SharePointOnlyGuestUsers.ps1) creates a CSV export of all guest users across SharePoint Online and/or OneDrive for Business sites in your Microsoft 365 tenant. The output allows to distinguish between "SharePoint-only guest users" and Entra B2B guest users.
 
 Please find more details in my blog post:
 
-[Reporting on SharePoint-Only Guest Users before Enabling the Azure AD B2B Integration - Cloud Protect Ninja][blog-post-url]
+[Reporting on SharePoint-Only Guest Users before Enabling the Entra B2B Integration - Cloud Protect Ninja][blog-post-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -51,7 +51,7 @@ In order to run the PowerShell script, the following requirements must be met:
 1. Install the [PnP PowerShell](https://pnp.github.io/powershell/articles/installation.html) module.
    - The script has been developed and tested with version [1.12.0](https://github.com/pnp/powershell/releases/tag/v1.12.0) of PnP PowerShell.
 
-2. Create an [app registration](https://pnp.github.io/powershell/articles/authentication.html#register-your-own-azure-ad-app) in Azure AD.
+2. Create an [app registration](https://pnp.github.io/powershell/articles/authentication.html#register-your-own-azure-ad-app) in Entra ID.
    - Configure `Sites.FullControl.All` SharePoint application permissions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

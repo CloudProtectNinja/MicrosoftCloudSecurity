@@ -1,23 +1,23 @@
 <#
     .SYNOPSIS
-        This script creates an export of all "SharePoint-only" guest users in comparison with Azure AD B2B guest users 
+        This script creates an export of all "SharePoint-only" guest users in comparison with Microsoft Entra B2B guest users 
         across all SharePoint and/or OneDrive sites of your Microsoft 365 tenant.
 
     .DESCRIPTION
         Required PowerShell modules:
         - PnP.PowerShell: https://github.com/pnp/powershell / Script developed with version 1.12.0
 
-        Required API permissions for the registered Azure AD application:
+        Required API permissions for the registered Entra ID application:
         - Sites.FullControl.All application permissions on the SharePoint API (https://microsoft.sharepoint-df.com/Sites.FullControl.All)
     
     .PARAMETER TenantName
         The name of the Microsoft 365 tenant, i.e. https://[TenantName].sharepoint.com.
     
     .PARAMETER ClientId
-        The client id of the Azure AD application, which has "Sites.FullControl.All" SharePoint application permissions to access all SharePoint and OneDrive sites.     
+        The client id of the Entra ID application, which has "Sites.FullControl.All" SharePoint application permissions to access all SharePoint and OneDrive sites.     
 
     .PARAMETER CertificateThumbprint
-        The thumbrint of the certificate associated with the Azure AD application, which is used to find the certificate in the Windows Certificate Store.
+        The thumbrint of the certificate associated with the Entra ID application, which is used to find the certificate in the Windows Certificate Store.
 
     .PARAMETER IncludedServices
         Defines whether to include SharePoint and OneDrive sites or only of the services.
@@ -50,8 +50,8 @@
     .LINK
         https://github.com/CloudProtectNinja/MicrosoftCloudSecurity/tree/main/Azure%20AD/B2B%20Collaboration/Export%20SharePoint-only%20Guest%20Users
 
-    .AUTHOR
-        Dustin Schutzeichel (https://cloudprotect.ninja)
+    .NOTES
+        Author: Dustin Schutzeichel (https://cloudprotect.ninja)
 #>
 
 [CmdletBinding()]
@@ -111,7 +111,7 @@ Function Main {
         # Rethrow error
         throw
     } finally {
-        # Disconnect from Microsoft 365 / Azure AD tenant
+        # Disconnect from Microsoft 365 / Entra ID tenant
         Disconnect
 
         # Stop logging
@@ -152,7 +152,7 @@ Function Connect-ToPnPSharePoint {
     # Connect to SharePoint Online via PnP
     $connection = $null
     if (![string]::IsNullOrEmpty($ClientId) -and ![string]::IsNullOrEmpty($CertificateThumbprint)) {
-        # Connect via Azure AD application credentials (client id + certificate)
+        # Connect via Entra ID application credentials (client id + certificate)
         
         # see https://github.com/pnp/powershell/blob/dev/samples/Connect.AzureAutomation/test-connection-runbook.ps1
         # see https://github.com/pnp/powershell/tree/dev/samples/Connect.AzureAutomation
@@ -160,7 +160,7 @@ Function Connect-ToPnPSharePoint {
         # Build the tenant .onmicrosoft.com address
         $tenant = "$TenantName.onmicrosoft.com"
 
-        # Connect via OAuth 2.0 client credentials flow with Azure AD app identity
+        # Connect via OAuth 2.0 client credentials flow with Entra ID app identity
         # Find certificate from Windows Certificate Store by thumbprint
         $connection = Connect-PnPOnline -Url $url `
             -ClientId $ClientId `
@@ -277,7 +277,7 @@ Function Export-GuestUsers {
             }            
 
             foreach ($user in $externalUsers) {
-                # Differentiate between SPO-only guest vs. Azure AD B2B guest
+                # Differentiate between SPO-only guest vs. Entra B2B guest
                 $externalUserType = "SPO"
                 if ($user.LoginName -like "*#EXT#*") {
                     $externalUserType = "B2B"
